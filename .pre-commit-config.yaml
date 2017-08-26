@@ -1,0 +1,9 @@
+-   repo: git://github.com/dnephin/pre-commit-golang
+    sha: e4693a4c282b4fc878eda172a929f7a6508e7d16
+    hooks:
+    -   id: go-fmt
+        exclude: templates/
+    -   id: go-vet
+        exclude: templates/
+    -   id: go-lint
+        exclude: templates/
