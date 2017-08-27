@@ -57,7 +57,11 @@ test: vendor fmt lint vet
 	@echo "+ $@"
 	@go test -v -race -tags "$(BUILDTAGS) cgo" ${GO_LIST_FILES}
 
-q
+.PHONY: cover
+cover:
+	@echo "+ $@"
+	@go list -f '{{if len .TestGoFiles}}"go test -coverprofile={{.Dir}}/.coverprofile {{.ImportPath}}"{{end}}' ${GO_LIST_FILES} | xargs -L 1 sh -c
+
 .PHONY: clean
 clean:
 	rm -f ./bin/${GOOS}/${APP}
