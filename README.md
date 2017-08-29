@@ -13,7 +13,7 @@ This service needs to help us to do a services for Kubernetes's cluster easier a
 * * [How to create own template](#own-template)
 * [Contributors](#contributors)
 
-## <a name="vision">The vision</a>
+## <a name="vision">Future vision</a>
 A generator will return a generated code as result of it's work, using different parameters like:
 * programming language (Go, PHP, ...)
 * type of service (REST API, cron job, ...)
@@ -23,12 +23,17 @@ A generator will return a generated code as result of it's work, using different
 
 ## <a name="install">Installation</a>
 
+...
+
 ## <a name="templates">Templates</a>
 
 ### <a name="go-templates">Go</a>
+
 * [Rest service](https://github.com/k8s-community/go-rest-template)
 
 ### <a name="own-template">How to create own template</a>
+
+...
 
 ## <a name="contributors">Contributors</a>
 
