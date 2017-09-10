@@ -1,0 +1,10 @@
+{
+    "app": {
+        "desc": "This is just example of template"
+    },
+    
+    "owner": {
+        "name": "Foo Bar",
+        "email": "foo@bar.com"
+    }
+}

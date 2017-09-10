@@ -1,7 +1,9 @@
 package config
 
 import (
+	"encoding/json"
 	"fmt"
+	"os"
 	"regexp"
 )
 
@@ -11,43 +13,37 @@ const (
 
 // Env stores configs for app like host, port, env, ...
 type Env struct {
-	AppName  string `envconfig:"app_name"`
-	AppDesc  string `envconfig:"app_desc"`
-	Language string `envconfig:"lang"`
-
-	OwnerName  string `envconfig:"owner_name"`
-	OwnerEmail string `envconfig:"owner_email"`
+	AppName string `envconfig:"app_name"`
 
 	SrcPath  string `envconfig:"src_path"`
 	DestPath string `envconfig:"dest_path"`
 
-	RepositoryURL string `envconfig:"repos_url"`
-	ProjectURL    string `envconfig:"project_url"`
-
-	ImageRegistryURL         string `envconfig:"registry_url"`
-	ServicesURL              string `envconfig:"services_url"`
-	AppURL                   string `envconfig:"app_url"`
-	PullSecretName           string `envconfig:"pull_secret_name"`
-	TLSSecretNameForRegistry string `envconfig:"tls_secret_name_for_registry"`
-	TLSSecretNameForApp      string `envconfig:"tls_secret_name_for_app"`
-
-	DevImageRegistryURL         string `envconfig:"dev_registry_url"`
-	DevServicesURL              string `envconfig:"dev_services_url"`
-	DevAppURL                   string `envconfig:"dev_app_url"`
-	DevPullSecretName           string `envconfig:"dev_pull_secret_name"`
-	DevTLSSecretNameForRegistry string `envconfig:"dev_tls_secret_name_for_registry"`
-	DevTLSSecretNameForApp      string `envconfig:"dev_tls_secret_name_for_app"`
-
-	EnvPrefix        string
-	ServiceEnvParams map[string]string `envconfig:"app_env_params"`
-
-	ExternalServicesEnvParams map[string]string `envconfig:"ext_env_params"`
-
 	LeftDelim  string `envconfig:"left_delim"`
 	RightDelim string `envconfig:"right_delim"`
 
-	SkipPaths     []string          `envconfig:"skip_paths"`
-	TemplatePaths map[string]string `envconfig:"template_paths"`
+	SkipPaths    []string          `envconfig:"skip_paths"`
+	ReplacePaths map[string]string `envconfig:"replace_paths"`
+
+	TemplateDataPath string `envconfig:"template_data_path"`
+}
+
+// ReadTemplateData gets all data for template
+func (e Env) ReadTemplateData() (map[string]interface{}, error) {
+	templateData := make(map[string]interface{})
+
+	file, err := os.Open(e.TemplateDataPath)
+	if err != nil {
+		return nil, fmt.Errorf("cannot open config file: %s", err.Error())
+	}
+
+	jsonParser := json.NewDecoder(file)
+	if err = jsonParser.Decode(&templateData); err != nil {
+		return nil, fmt.Errorf("cannot parse config file: %s", err.Error())
+	}
+
+	templateData["appName"] = e.AppName
+
+	return templateData, nil
 }
 
 // Validate fields from environment

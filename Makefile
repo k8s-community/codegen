@@ -9,7 +9,9 @@ PROJECT=github.com/k8s-community/codegen
 RELEASE?=0.0.0
 GOOS?=darwin
 
+# Left delimiter of template constructions, vars, ...
 CODEGEN_LEFT_DELIM?="{[("
+# Right delimiter of template constructions, vars, ...
 CODEGEN_RIGHT_DELIM?=")]}"
 
 REPO_INFO=$(shell git config --get remote.origin.url)

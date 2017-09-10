@@ -35,7 +35,7 @@ func copyTemplatesDir(config Config) error {
 	}
 
 	// paste app name and etc. in template paths
-	pathsMapForMove, err := template.ExecuteFromMap(config.TemplatePaths, config.LeftDelim, config.RightDelim, config.TemplateData)
+	pathsMapForMove, err := template.ExecuteFromMap(config.ReplacePaths, config.LeftDelim, config.RightDelim, config.TemplateData)
 	if err != nil {
 		return fmt.Errorf("cannot process templates for rename/move paths: %s", err)
 	}

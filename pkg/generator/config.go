@@ -12,8 +12,8 @@ type Config struct {
 
 	FuncMap template.FuncMap
 
-	SkipPaths     []string
-	TemplatePaths map[string]string
+	SkipPaths    []string
+	ReplacePaths map[string]string
 
-	TemplateData interface{}
+	TemplateData map[string]interface{}
 }

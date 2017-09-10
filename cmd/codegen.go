@@ -31,9 +31,7 @@ func getConfigForCodeGeneration() generator.Config {
 		log.Fatalf("Config validation error: %s", err)
 	}
 
-	if initConfig.EnvPrefix == "" {
-		initConfig.EnvPrefix = initConfig.AppName
-	}
+	templateData, err := initConfig.ReadTemplateData()
 
 	config := generator.Config{
 		SrcPath:  initConfig.SrcPath,
@@ -47,10 +45,10 @@ func getConfigForCodeGeneration() generator.Config {
 			"ToLower": strings.ToLower,
 		},
 
-		SkipPaths:     initConfig.SkipPaths,
-		TemplatePaths: initConfig.TemplatePaths,
+		SkipPaths:    initConfig.SkipPaths,
+		ReplacePaths: initConfig.ReplacePaths,
 
-		TemplateData: initConfig,
+		TemplateData: templateData,
 	}
 
 	return config
