@@ -7,7 +7,7 @@ BUILDTAGS=
 APP=codegen
 PROJECT=github.com/k8s-community/codegen
 RELEASE?=0.0.0
-GOOS?=darwin
+GOOS?=linux
 
 # Left delimiter of template constructions, vars, ...
 CODEGEN_LEFT_DELIM?="{[("
