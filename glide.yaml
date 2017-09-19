@@ -1,6 +1,0 @@
-package: stash.openprovider.nl/msoa/msinit
-import:
-- package: github.com/takama/envconfig
-  version: 0398cd69f495f1b1ee644c036d559e7374ac471a
-excludeDirs:
-- templates
