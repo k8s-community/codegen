@@ -9,3 +9,7 @@ bin
 glide.lock
 
 vendor
+_vendor*
+
+.coverprofile
+_code-templates

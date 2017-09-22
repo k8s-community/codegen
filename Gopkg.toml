@@ -20,8 +20,7 @@
 #  name = "github.com/x/y"
 #  version = "2.4.0"
 
-ignored = ["github.com/k8s-community/codegen/templates"]
 
 [[constraint]]
-  name = "github.com/takama/envconfig"
-  revision = "0398cd69f495f1b1ee644c036d559e7374ac471a"
+  name = "github.com/kelseyhightower/envconfig"
+  version = "1.3.0"

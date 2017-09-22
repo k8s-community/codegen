@@ -37,7 +37,13 @@ func TestProcess(t *testing.T) {
 	data["worldTo"] = "Nova"
 	data["worldFrom"] = "Earth"
 
-	executor := NewRecursiveExecutor(srcDir, data, "{[(", ")]}", nil, nil)
+	config := Config{
+		SrcPath:    srcDir,
+		Data:       data,
+		LeftDelim:  "{[(",
+		RightDelim: ")]}",
+	}
+	executor := NewRecursiveExecutor(config)
 
 	err = executor.Process()
 	defer func() {

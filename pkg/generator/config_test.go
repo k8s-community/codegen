@@ -1,4 +1,4 @@
-package config
+package generator
 
 import "testing"
 
@@ -23,11 +23,11 @@ var appNameValidationFixtures = []struct {
 
 func TestAppNameValidationHandler(t *testing.T) {
 	for _, expData := range appNameValidationFixtures {
-		envConfig := &Env{
+		envConfig := &Config{
 			AppName: expData.appName,
 		}
 
-		err := envConfig.validateAppName()
+		err := envConfig.validateServiceName()
 		isPassed := (err != nil)
 
 		if expData.isPassed == isPassed {

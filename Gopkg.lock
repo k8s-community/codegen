@@ -2,13 +2,14 @@
 
 
 [[projects]]
-  name = "github.com/takama/envconfig"
+  name = "github.com/kelseyhightower/envconfig"
   packages = ["."]
-  revision = "0398cd69f495f1b1ee644c036d559e7374ac471a"
+  revision = "f611eb38b3875cc3bd991ca91c51d06446afa14c"
+  version = "v1.3.0"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "15972524f661f4ac66f219469d2cd72a4e3133fe51e1da7fa9f5e325a9420ce2"
+  inputs-digest = "4520b591ee99905ed3877636183e2cdfc55ca045483b1158409d41b848c0e6d9"
   solver-name = "gps-cdcl"
   solver-version = 1

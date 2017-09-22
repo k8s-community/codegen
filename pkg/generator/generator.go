@@ -35,7 +35,7 @@ func copyTemplatesDir(config Config) error {
 	}
 
 	// paste app name and etc. in template paths
-	pathsMapForMove, err := template.ExecuteFromMap(config.ReplacePaths, config.LeftDelim, config.RightDelim, config.TemplateData)
+	pathsMapForMove, err := template.ExecuteFromMap(config.ReplacePaths, config.LeftDelim, config.RightDelim, config.Data)
 	if err != nil {
 		return fmt.Errorf("cannot process templates for rename/move paths: %s", err)
 	}
@@ -50,8 +50,7 @@ func copyTemplatesDir(config Config) error {
 }
 
 func executeTemplatesDir(config Config) error {
-	r := template.NewRecursiveExecutor(config.DestPath, config.TemplateData, config.LeftDelim, config.RightDelim, config.FuncMap, config.SkipPaths)
-
+	r := template.NewRecursiveExecutor(config.Config)
 	err := r.Process()
 	if err != nil {
 		return fmt.Errorf("cannot process templates: %s", err)
