@@ -73,7 +73,7 @@ ingress:
     ## Secrets must be manually created in the namespace
     ##
     tls:
-    - secretName: codegen-secret
+    - secretName: codegen-tls-secret
       hosts:
       - codegen.k8s.community
 

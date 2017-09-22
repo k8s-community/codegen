@@ -20,17 +20,10 @@ CODEGEN_LOG_LEVEL?=0
 NAMESPACE?=k8s-community
 
 # Infrastructure: dev, stable, test ...
-INFRASTRUCTURE?=k8s-community
+INFRASTRUCTURE?=community
 KUBE_CONTEXT?=${INFRASTRUCTURE}
 VALUES?=values-${INFRASTRUCTURE}
 
-# Namespace: dev, prod, release, cte, username ...
-NAMESPACE?=k8s-community
-
-# Infrastructure (dev, stable, test ...) and kube-context for helm
-INFRASTRUCTURE?=stable
-KUBE_CONTEXT?=${INFRASTRUCTURE}
-VALUES?=values-${INFRASTRUCTURE}
 
 CONTAINER_IMAGE?=${REGISTRY}/${NAMESPACE}/${APP}
 CONTAINER_NAME?=${APP}-${NAMESPACE}
