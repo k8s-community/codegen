@@ -1,0 +1,140 @@
+{{ define "content" }}
+<a href="http://k8s.community" target="_blank" class="navbar-right logo"><img src="/static/icons/k8s_community.jpg"></a>
+
+<form class="form-horizontal" method="POST" action="/generate">
+    <fieldset>
+    
+    <legend>Go REST сервис</legend>
+    
+    {{ if .err }}
+    <div class="starter-template">
+        <h3>Произошла ошибка</h3>
+        <p class="lead">
+            {{ .err }}
+        </p>
+    </div>
+    {{ end }}
+    
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="service_name">Имя сервиса*</label>  
+        <div class="col-md-6">
+            <input id="service_name" name="service_name" type="text" placeholder="<myapp>" class="form-control input-md" required="" 
+                    {{ if .service_name }}value="{{ .service_name }}"{{ end }}
+                >
+            <span class="help-block">разрешены только a-z, -, 0-9 символы</span>  
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="project_path">GOPATH сервиса*</label>  
+        <div class="col-md-6">
+            <input id="go_path" name="project_path" type="text" placeholder="github.com/<username>/<myapp>" class="form-control input-md"  required=""
+                    {{ if .project_path }}value="{{ .project_path }}"{{ end }}
+                >
+            <span class="help-block">путь используется при импорте внутренних пакетов в коде</span>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="view_details"><a class="btn btn-secondary" onclick="toggler('additional-block');">Дополнительные параметры »</a></label>  
+    </div>
+    
+    <div id="additional-block" class="hidden">
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="service_description">Описание сервиса</label>
+            <div class="col-md-4">                     
+                <textarea class="form-control" id="service_description" name="service_description">{{ if .service_description }}{{ .service_description }}{{ else }}Разработанный демо-сервис в рамках "Kubernetes community" workshop.{{ end }}
+                </textarea>
+                <span class="help-block">какая главная задача / функция сервиса?</span>
+            </div>
+        </div>
+        
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="owner_name">Имя владельца</label>  
+            <div class="col-md-6">
+                <input id="owner_name" name="owner_name" type="text" placeholder="<Name Surname>" class="form-control input-md"
+                        {{ if .owner_name }}value="{{ .owner_name }}"{{ end }}
+                >
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="owner_email">E-mail владельца</label>  
+            <div class="col-md-6">
+                <input id="owner_email" name="owner_email" type="text" placeholder="<owner@email.com>" class="form-control input-md"
+                        {{ if .owner_email }}value="{{ .owner_email }}"{{ end }}    
+                >
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="project_url">URL вашего публичного репозитория</label>  
+            <div class="col-md-6">
+                <input id="go_path" name="project_url" type="text" placeholder="https://github.com/<username>/<myapp>" class="form-control input-md"
+                        {{ if .project_url }}value="{{ .project_url }}"{{ end }}     
+                >
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="homepage_url">URL вашего публичного аккаунта / компании</label>  
+            <div class="col-md-6">
+                <input id="go_path" name="homepage_url" type="text" placeholder="https://github.com/<username>/" class="form-control input-md"
+                        {{ if .homepage_url }}value="{{ .homepage_url }}"{{ end }}      
+                >
+            </div>
+        </div>
+    </div>
+    
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="view_details"><a class="btn btn-secondary" onclick="toggler('advanced-block');">Параметры для Kubernetes »</a></label>  
+    </div>
+    
+    <div id="advanced-block" class="hidden">
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="registry_url">Docker registry URL</label>  
+            <div class="col-md-6">
+                <input id="go_path" name="registry_url" type="text" class="form-control input-md"
+                    value="{{ if .registry_url }}{{ .registry_url }}{{ else }}registry.k8s.community{{ end }}" 
+                >
+                <span class="help-block">адрес хранилища docker контейнеров</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="namespace">Kubernetes namespace (по умолчанию)</label>  
+            <div class="col-md-6">
+                <input id="go_path" name="namespace" type="text" placeholder="dev" class="form-control input-md"
+                    value="{{ if .namespace }}{{ .namespace }}{{ else }}k8s-community{{ end }}"
+                >
+                <span class="help-block">пространство, в которое по умол-ю будет работать сервис - dev, prod, release, app, username, ...</span>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label class="col-md-4 control-label" for="infrastructure">Окружение (по умолчанию)</label>  
+            <div class="col-md-6">
+                <input id="go_path" name="infrastructure" type="text" class="form-control input-md"
+                    value="{{ if .infrastructure }}{{ .infrastructure }}{{ else }}community{{ end }}"
+                >
+                <span class="help-block">настройки для сервиса будут браться исходя из типа окружения - dev, stable, test ...</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-md-4 control-label" for="generate_button"></label>
+        <div class="col-md-4">
+            <button id="generate_button" name="generate_button" class="btn btn-success">Сгенерировать код</button>
+        </div>
+    </div>
+    </fieldset>
+</form>
+
+<p class="lead align-center">Присоединяйтесь к нам:</p>
+<p class="align-center"><a href="https://github.com/k8s-community"><img src="/static/icons/github.png" alt="GitHub"></a>
+    <a href="https://twitter.com/k8s_community"><img src="/static/icons/twitter.png" alt="Twitter"></a>
+    <a href="https://slack.k8s.community"><img src="/static/icons/slack.png" alt="Slack"></a>
+    <a href="https://www.meetup.com/Kubernetes-Novosibirsk/"><img src="/static/icons/meetup.png" alt="Meetup"></a>
+</p>
+{{ end }}

@@ -4,50 +4,52 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 )
 
-// RecursiveExecutor process templates in selected directory
-type RecursiveExecutor struct {
+// Config consists of params for template execution
+type Config struct {
 	SrcPath string
 	Data    interface{}
 
 	LeftDelim  string
 	RightDelim string
-	FuncMap    template.FuncMap
+
+	FuncMap template.FuncMap
 
 	SkipPaths []string
 }
 
+// RecursiveExecutor process templates in selected directory
+type RecursiveExecutor struct {
+	Config
+}
+
 // NewRecursiveExecutor inits RecursiveExecutor instance
-func NewRecursiveExecutor(srcPath string, data interface{}, leftDelim string, rightDelim string, funcMap template.FuncMap, skipPaths []string) *RecursiveExecutor {
+func NewRecursiveExecutor(config Config) *RecursiveExecutor {
 	return &RecursiveExecutor{
-		SrcPath:    srcPath,
-		Data:       data,
-		LeftDelim:  leftDelim,
-		RightDelim: rightDelim,
-		FuncMap:    funcMap,
-		SkipPaths:  skipPaths,
+		Config: config,
 	}
 }
 
 // Process all templates from source path
-func (e RecursiveExecutor) Process() error {
+func (r RecursiveExecutor) Process() error {
 	// check if the source dir exist
-	src, err := os.Stat(e.SrcPath)
+	src, err := os.Stat(r.SrcPath)
 	if err != nil {
 		return err
 	}
 
 	if src.IsDir() {
-		return e.processTemplatesDir(e.SrcPath)
+		return r.processTemplatesDir(r.SrcPath)
 	}
 
-	return e.processTemplateFile(e.SrcPath)
+	return r.processTemplateFile(r.SrcPath)
 }
 
 // ProcessTemplatesDir process templates by path
-func (e RecursiveExecutor) processTemplatesDir(path string) error {
+func (r RecursiveExecutor) processTemplatesDir(path string) error {
 	directory, err := os.Open(path)
 	if err != nil {
 		return fmt.Errorf("cannot open dir: %s", err)
@@ -59,17 +61,17 @@ func (e RecursiveExecutor) processTemplatesDir(path string) error {
 
 	for _, obj := range objects {
 		objectPath := path + "/" + obj.Name()
-		if e.skipObject(objectPath) {
+		if r.skipObject(objectPath) {
 			continue
 		}
 
 		if obj.IsDir() {
-			err = e.processTemplatesDir(objectPath)
+			err = r.processTemplatesDir(objectPath)
 			if err != nil {
 				return fmt.Errorf("cannot process dir %s: %s", objectPath, err)
 			}
 		} else {
-			err = e.processTemplateFile(objectPath)
+			err = r.processTemplateFile(objectPath)
 			if err != nil {
 				return fmt.Errorf("cannot process file %s: %s", objectPath, err)
 			}
@@ -80,10 +82,10 @@ func (e RecursiveExecutor) processTemplatesDir(path string) error {
 }
 
 // processTemplateFile process template file by path
-func (e RecursiveExecutor) processTemplateFile(path string) error {
+func (r RecursiveExecutor) processTemplateFile(path string) error {
 	fileName := filepath.Base(path)
 
-	tpl, err := template.New(fileName).Funcs(e.FuncMap).Delims(e.LeftDelim, e.RightDelim).ParseFiles(path)
+	tpl, err := template.New(fileName).Funcs(r.FuncMap).Delims(r.LeftDelim, r.RightDelim).ParseFiles(path)
 	if err != nil {
 		return fmt.Errorf("cannot parse file: %s", err)
 	}
@@ -94,7 +96,7 @@ func (e RecursiveExecutor) processTemplateFile(path string) error {
 		return fmt.Errorf("cannot create file: %s", err)
 	}
 
-	err = tpl.Execute(f, e.Data)
+	err = tpl.Execute(f, r.Data)
 	if err != nil {
 		return fmt.Errorf("cannot execute template: %s", err)
 	}
@@ -103,9 +105,9 @@ func (e RecursiveExecutor) processTemplateFile(path string) error {
 }
 
 // skipObject checks by list that path can be skipped
-func (e RecursiveExecutor) skipObject(path string) bool {
-	for _, skipPath := range e.SkipPaths {
-		if path == e.SrcPath+"/"+skipPath {
+func (r RecursiveExecutor) skipObject(path string) bool {
+	for _, skipPath := range r.SkipPaths {
+		if path == strings.TrimRight(r.SrcPath+"/"+skipPath, "/") {
 			return true
 		}
 	}

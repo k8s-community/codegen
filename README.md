@@ -1,9 +1,13 @@
 # Code generator
 
 ## Description
-This util needs us to stop to do repetative work for service code generation. It can create service code from template.
+A code generator can be useful to stop to do repetative work for service code generation. It can create service code from template.
 
 [![Contributions Welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/k8s-community/code-generator/issues)
+
+### How to use a code generator:
+
+
 
 ## Contributors
 

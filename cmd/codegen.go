@@ -1,57 +1,37 @@
+// Copyright 2017 Kubernetes Community Authors. All rights reserved.
+// Use of this source code is governed by a MIT-style
+// license that can be found in the LICENSE file.
+
 package main
 
 import (
+	"fmt"
 	"log"
-	"strings"
-	"text/template"
 
 	"github.com/k8s-community/codegen/pkg/config"
-	"github.com/k8s-community/codegen/pkg/generator"
-	"github.com/takama/envconfig"
+	"github.com/k8s-community/codegen/pkg/service"
+	"github.com/k8s-community/codegen/pkg/system"
 )
 
 func main() {
-	config := getConfigForCodeGeneration()
+	// Load ENV configuration
+	cfg := new(config.Config)
+	if err := cfg.Load(config.SERVICENAME); err != nil {
+		log.Fatal(err)
+	}
 
-	err := generator.GenerateCode(config)
+	// Configure service and get router
+	router, logger, err := service.Setup(cfg)
 	if err != nil {
-		log.Fatalf("Cannot generate code: %s", err)
-	}
-}
-
-func getConfigForCodeGeneration() generator.Config {
-	var initConfig config.Env
-	err := envconfig.Process("codegen", &initConfig)
-	if err != nil {
-		log.Fatalf("Couldn't get service config: %s", err)
+		log.Fatal(err)
 	}
 
-	err = initConfig.Validate()
-	if err != nil {
-		log.Fatalf("Config validation error: %s", err)
+	// Listen and serve handlers
+	go router.Listen(fmt.Sprintf("%s:%d", cfg.LocalHost, cfg.LocalPort))
+
+	// Wait signals
+	signals := system.NewSignals()
+	if err := signals.Wait(logger, new(system.Handling)); err != nil {
+		logger.Fatal(err)
 	}
-
-	if initConfig.EnvPrefix == "" {
-		initConfig.EnvPrefix = initConfig.AppName
-	}
-
-	config := generator.Config{
-		SrcPath:  initConfig.SrcPath,
-		DestPath: initConfig.DestPath,
-
-		LeftDelim:  initConfig.LeftDelim,
-		RightDelim: initConfig.RightDelim,
-
-		FuncMap: template.FuncMap{
-			"ToUpper": strings.ToUpper,
-			"ToLower": strings.ToLower,
-		},
-
-		SkipPaths:     initConfig.SkipPaths,
-		TemplatePaths: initConfig.TemplatePaths,
-
-		TemplateData: initConfig,
-	}
-
-	return config
 }

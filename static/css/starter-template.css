@@ -1,0 +1,21 @@
+body {
+    padding-bottom: 100px;
+}  
+.navbar {
+    border-width: 0 0 1px;
+    border-radius: 0;
+}
+.logo img {
+    max-height: 100px;
+}
+.starter-template {
+    padding: 40px 15px;
+    text-align: center;
+}
+#download-link {
+    padding: 14px 24px;
+    font-size: 21px;
+}
+.align-center {
+    text-align: center;
+}

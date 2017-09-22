@@ -8,4 +8,8 @@ bin
 .glide/
 glide.lock
 
-vendor
+_vendor*
+
+certs
+
+.coverprofile
