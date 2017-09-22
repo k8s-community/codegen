@@ -8,7 +8,7 @@ replicaCount: 2
 
 ## Count of revisions saved in release history
 ##
-revisionHistoryLimit: 1
+revisionHistoryLimit: 5
 
 ## Time of accepting requests to the service ( seconds )
 ##
@@ -40,7 +40,7 @@ image:
 
   ## Docker Registry/Hub auth secret name, always use `registry-pull-secret` if registry inside if k8s
   ##
-  pullSecretName: registry-pull-secret
+  pullSecretName: {[( .ChartEnvs.stable.PullSecretName )]}
 
   ## Docker Registry/Hub image pull policy
   ##

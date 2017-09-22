@@ -2,7 +2,7 @@
 # Use of this source code is governed by a MIT-style
 # license that can be found in the LICENSE file.
 
-APP={[( .ServiceName )]}
+APP?={[( .ServiceName )]}
 PROJECT={[( .ProjectPath )]}
 REGISTRY?={[( .RegistryURL )]}
 CA_DIR?=certs
@@ -19,8 +19,9 @@ GOARCH?=amd64
 # Namespace: dev, prod, release, cte, username ...
 NAMESPACE?={[( .Namespace )]}
 
-# Infrastructure: dev, stable, test ...
+# Infrastructure (dev, stable, test ...) and kube-context for helm
 INFRASTRUCTURE?={[( .Infrastructure )]}
+KUBE_CONTEXT?=${INFRASTRUCTURE}
 VALUES?=values-${INFRASTRUCTURE}
 
 CONTAINER_IMAGE?=${REGISTRY}/${NAMESPACE}/${APP}
@@ -55,6 +56,7 @@ ifeq ("$(wildcard $(CA_DIR)/ca-certificates.crt)","")
 	@echo "+ $@"
 	@docker run --name ${CONTAINER_NAME}-certs -d alpine:edge sh -c "apk --update upgrade && apk add ca-certificates && update-ca-certificates"
 	@docker wait ${CONTAINER_NAME}-certs
+	@mkdir -p ${CA_DIR}
 	@docker cp ${CONTAINER_NAME}-certs:/etc/ssl/certs/ca-certificates.crt ${CA_DIR}
 	@docker rm -f ${CONTAINER_NAME}-certs
 endif
@@ -104,7 +106,7 @@ endif
 
 .PHONY: deploy
 deploy: push
-	helm upgrade ${CONTAINER_NAME} -f charts/${VALUES}.yaml charts --kube-context ${INFRASTRUCTURE} --namespace ${NAMESPACE} --version=${RELEASE} -i --wait
+	helm upgrade ${CONTAINER_NAME} -f charts/${VALUES}.yaml charts --kube-context ${KUBE_CONTEXT} --namespace ${NAMESPACE} --version=${RELEASE} -i --wait
 
 GO_LIST_FILES=$(shell go list ${PROJECT}/... | grep -v vendor)
 

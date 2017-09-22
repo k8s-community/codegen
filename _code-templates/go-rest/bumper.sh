@@ -42,11 +42,13 @@ if [ "${GO_OS}" == "darwin" ]; then
     sed -i '' -e "s/\(version:\)\(\s*\).*/\1 $new_version/" charts/Chart.yaml
     sed -i '' -e "s/\(tag:\)\(\s*\).*/\1 $new_version/" charts/values-stable.yaml
     sed -i '' -e "s/\(tag:\)\(\s*\).*/\1 $new_version/" charts/values-dev.yaml
+    sed -i '' -e "s/\(tag:\)\(\s*\).*/\1 $new_version/" charts/values-k8s-community.yaml
     sed -i '' -e "s/\(# Version\)\(\s*\).*/\1 $new_version/" docs/CHANGELOG.md
 else
     sed -i -e "s/\(RELEASE?=\).*/\1$new_version/" Makefile
     sed -i -e "s/\(version:\)\(\s*\).*/\1 $new_version/" charts/Chart.yaml
     sed -i -e "s/\(tag:\)\(\s*\).*/\1 $new_version/" charts/values-stable.yaml
     sed -i -e "s/\(tag:\)\(\s*\).*/\1 $new_version/" charts/values-dev.yaml
+    sed -i -e "s/\(tag:\)\(\s*\).*/\1 $new_version/" charts/values-k8s-community.yaml
     sed -i -e "s/\(# Version\)\(\s*\).*/\1 $new_version/" docs/CHANGELOG.md
 fi

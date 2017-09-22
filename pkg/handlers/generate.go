@@ -39,6 +39,7 @@ type ChartEnvironment struct {
 	Namespace             string
 	TLSSecretName         string
 	TLSServicesSecretName string
+	PullSecretName        string
 }
 
 // GenerateCode handles requests for code generation
@@ -129,6 +130,7 @@ func (h *Handler) getGeneratorConfigFromRequest(r *http.Request) (*generator.Con
 		Namespace:             "dev",
 		TLSSecretName:         fmt.Sprintf("%s-tls-secret", serviceName),
 		TLSServicesSecretName: "tls-secret",
+		PullSecretName:        "registry-pull-secret",
 	}
 
 	// TODO: get it from request
@@ -139,11 +141,24 @@ func (h *Handler) getGeneratorConfigFromRequest(r *http.Request) (*generator.Con
 		Namespace:             "stable",
 		TLSSecretName:         fmt.Sprintf("%s-tls-secret", serviceName),
 		TLSServicesSecretName: "tls-secret",
+		PullSecretName:        "registry-pull-secret",
+	}
+
+	// TODO: get it from request
+	communityParams := ChartEnvironment{
+		RegistryHost:          "registry.k8s.community",
+		ServiceHost:           fmt.Sprintf("%s.k8s.community", serviceName),
+		CommonServicesHost:    "services.k8s.community",
+		Namespace:             "prod",
+		TLSSecretName:         fmt.Sprintf("%s-tls-secret", serviceName),
+		TLSServicesSecretName: "tls-secret",
+		PullSecretName:        "registry-pull-secret",
 	}
 
 	data.ChartEnvs = make(map[string]ChartEnvironment)
 	data.ChartEnvs["dev"] = devParams
 	data.ChartEnvs["stable"] = stableParams
+	data.ChartEnvs["community"] = communityParams
 
 	srcDir := "code-templates/go-rest"
 	destDir := fmt.Sprintf("/tmp/%s", utils.RandomString(16))

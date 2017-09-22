@@ -8,7 +8,7 @@ replicaCount: 2
 
 ## Count of revisions saved in release history
 ##
-revisionHistoryLimit: 1
+revisionHistoryLimit: 5
 
 ## Time of accepting requests to the service ( seconds )
 ##
@@ -29,18 +29,18 @@ gracePeriod: 30
 
 ## Base namespace for working services
 ##
-workflow: {[( .ChartEnvs.dev.Namespace )]}
+workflow: {[( .ChartEnvs.community.Namespace )]}
 
 image:
   ## Docker Registry/Hub image name and tag
   ##
-  registry: {[( .ChartEnvs.dev.RegistryHost )]}
+  registry: {[( .ChartEnvs.community.RegistryHost )]}
   name: {[( .ServiceName )]}
   tag: 0.0.0
 
   ## Docker Registry/Hub auth secret name, always use `registry-pull-secret` if registry inside if k8s
   ##
-  pullSecretName: {[( .ChartEnvs.dev.PullSecretName )]}
+  pullSecretName: {[( .ChartEnvs.community.PullSecretName )]}
 
   ## Docker Registry/Hub image pull policy
   ##
@@ -57,9 +57,9 @@ ingress:
 
   ## Ingress annotations (e.g. `Let's encrypt` annotations to generating certs)
   ##
-  annotations:
-    kubernetes.io/ingress.class: nginx
-    kubernetes.io/tls-acme: 'true'
+  # annotations:
+  #   kubernetes.io/ingress.class: nginx
+  #   kubernetes.io/tls-acme: 'true'
 
   ## Ingress host feature allow access to service through host 
   ## example: https://hostname
@@ -67,15 +67,15 @@ ingress:
   ##
   hostBased:
     hosts:
-    - {[( .ChartEnvs.dev.ServiceHost )]}
+    # - {[( .ChartEnvs.community.ServiceHost )]}
 
     ## Ingress TLS configuration
     ## Secrets must be manually created in the namespace
     ##
     tls:
-    - secretName: {[( .ChartEnvs.dev.TLSSecretName )]}
-      hosts:
-      - {[( .ChartEnvs.dev.ServiceHost )]}
+    # - secretName: {[( .ChartEnvs.community.TLSSecretName )]}
+    #   hosts:
+    #   - {[( .ChartEnvs.community.ServiceHost )]}
 
   ## Ingress path feature allow access to service through path 
   ## example: https://hostname/namespace/servicename
@@ -83,16 +83,16 @@ ingress:
   ##
   pathBased:
     hosts:
-    - {[( .ChartEnvs.dev.CommonServicesHost )]}
+    - {[( .ChartEnvs.community.CommonServicesHost )]}
 
     ## Ingress TLS configuration
     ## Secrets must be manually created in the namespace
     ## except of case when annotatoon `kubernetes.io/tls-acme: 'true'` is present
     ##
     tls:
-    - secretName: {[( .ChartEnvs.dev.TLSServicesSecretName )]}
+    - secretName: {[( .ChartEnvs.community.TLSServicesSecretName )]}
       hosts:
-      - {[( .ChartEnvs.dev.CommonServicesHost )]}
+      - {[( .ChartEnvs.community.CommonServicesHost )]}
 
 service:
   ## App container name
