@@ -2,7 +2,7 @@
 
 ## Contributing
 
-Information about contributing to the [asdasd](../README.md) live in [CONTRIBUTING.md](CONTRIBUTING.md)
+Information about contributing to the [README.md](../README.md) live in [CONTRIBUTING.md](CONTRIBUTING.md)
 
 ## Changelog
 
