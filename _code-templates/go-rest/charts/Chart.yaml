@@ -1,0 +1,10 @@
+name: {[( .ServiceName )]}
+description: A helm chart for Kubernetes application
+version: 0.0.0{[( if .HomePageURL )]}
+home: {[( .HomePageURL )]}
+{[( end )]}{[( if .ProjectURL )]}sources:
+  - {[( .ProjectURL )]}{[( end )]}
+{[( if and .OwnerName .OwnerEmail )]}maintainers:
+  - name: {[( .OwnerName )]}
+    email: {[( .OwnerEmail )]}
+{[( end )]}engine: gotpl
