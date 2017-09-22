@@ -4,7 +4,7 @@
 
 ## Count of instances
 ##
-replicaCount: 2
+replicaCount: 1
 
 ## Count of revisions saved in release history
 ##
