@@ -87,7 +87,7 @@ func (h *Handler) generateServiceArchive(r *http.Request) (string, error) {
 		return "", fmt.Errorf("Cannot generate service: %s", err)
 	}
 
-	destFile := "/tmp/archive/" + fmt.Sprintf("%s.tar.gz", utils.RandomString(16))
+	destFile := "/tmp/archive/" + fmt.Sprintf("%s-%s.tar.gz", config.AppName, utils.RandomString(16))
 	err = utils.CreateTarGzArchive(config.DestPath, destFile)
 	if err != nil {
 		h.logger.Infof("cannot generate code: %s with config %#v", err, *config)
@@ -124,20 +124,20 @@ func (h *Handler) getGeneratorConfigFromRequest(r *http.Request) (*generator.Con
 	// TODO: get it from request
 	devParams := ChartEnvironment{
 		RegistryHost:          "registry.k8s.community",
-		ServiceHost:           "codegen-dev.k8s.community",
+		ServiceHost:           fmt.Sprintf("%s-dev.k8s.community", serviceName),
 		CommonServicesHost:    "services-dev.k8s.community",
 		Namespace:             "dev",
-		TLSSecretName:         "codegen-tls-secret",
+		TLSSecretName:         fmt.Sprintf("%s-tls-secret", serviceName),
 		TLSServicesSecretName: "tls-secret",
 	}
 
 	// TODO: get it from request
 	stableParams := ChartEnvironment{
 		RegistryHost:          "registry.k8s.community",
-		ServiceHost:           "codegen.k8s.community",
+		ServiceHost:           fmt.Sprintf("%s.k8s.community", serviceName),
 		CommonServicesHost:    "services.k8s.community",
 		Namespace:             "stable",
-		TLSSecretName:         "codegen-tls-secret",
+		TLSSecretName:         fmt.Sprintf("%s-tls-secret", serviceName),
 		TLSServicesSecretName: "tls-secret",
 	}
 

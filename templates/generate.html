@@ -39,7 +39,7 @@
         <label class="col-md-4 control-label" for="view_details"><a class="btn btn-secondary" onclick="toggler('additional-block');">Дополнительные параметры »</a></label>  
     </div>
     
-    <div id="additional-block">
+    <div id="additional-block" class="hidden">
         <div class="form-group">
             <label class="col-md-4 control-label" for="service_description">Описание сервиса</label>
             <div class="col-md-4">                     
@@ -87,7 +87,7 @@
     </div>
     
     <div class="form-group">
-        <label class="col-md-4 control-label" for="view_details"><a class="btn btn-secondary" onclick="toggler('advanced-block');">Продвинутые параметры »</a></label>  
+        <label class="col-md-4 control-label" for="view_details"><a class="btn btn-secondary" onclick="toggler('advanced-block');">Параметры для Kubernetes »</a></label>  
     </div>
     
     <div id="advanced-block" class="hidden">
@@ -95,7 +95,7 @@
             <label class="col-md-4 control-label" for="registry_url">Docker registry URL</label>  
             <div class="col-md-6">
                 <input id="go_path" name="registry_url" type="text" class="form-control input-md"
-                    {{ if .registry_url }}value="{{ .registry_url }}"{{ else }}registry.k8s.community{{ end }} 
+                    value="{{ if .registry_url }}{{ .registry_url }}{{ else }}registry.k8s.community{{ end }}" 
                 >
                 <span class="help-block">адрес хранилища docker контейнеров</span>
             </div>
@@ -104,8 +104,8 @@
         <div class="form-group">
             <label class="col-md-4 control-label" for="namespace">Kubernetes namespace (по умолчанию)</label>  
             <div class="col-md-6">
-                <input id="go_path" name="namespace" type="text" placeholder="dev" class="form-control input-md" value="stable"
-                    {{ if .namespace }}value="{{ .namespace }}"{{ else }}stable{{ end }} 
+                <input id="go_path" name="namespace" type="text" placeholder="dev" class="form-control input-md"
+                    value="{{ if .namespace }}{{ .namespace }}{{ else }}k8s-community{{ end }}"
                 >
                 <span class="help-block">пространство, в которое по умол-ю будет работать сервис - dev, prod, release, app, username, ...</span>
             </div>
@@ -115,7 +115,7 @@
             <label class="col-md-4 control-label" for="infrastructure">Окружение (по умолчанию)</label>  
             <div class="col-md-6">
                 <input id="go_path" name="infrastructure" type="text" class="form-control input-md"
-                {{ if .infrastructure }}value="{{ .infrastructure }}"{{ else }}stable{{ end }}
+                    value="{{ if .infrastructure }}{{ .infrastructure }}{{ else }}community{{ end }}"
                 >
                 <span class="help-block">настройки для сервиса будут браться исходя из типа окружения - dev, stable, test ...</span>
             </div>

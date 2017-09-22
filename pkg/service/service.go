@@ -53,9 +53,10 @@ func Setup(cfg *config.Config) (r router.BitRoute, log logger.Logger, err error)
 	r.GET("/readyz", h.Ready)
 	r.GET("/info", h.Info)
 
+	r.GET("/generate", h.Root)
 	r.POST("/generate", h.GenerateCode)
-
 	r.GET("/archive/*", h.Archive)
+
 	r.GET("/static/*", h.Static)
 
 	return
