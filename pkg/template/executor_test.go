@@ -8,7 +8,7 @@ import (
 
 // TestProcess checks that template executor can process files and dirs with files
 func TestProcess(t *testing.T) {
-	srcDir := "/tmp/dat1/"
+	srcDir := "/tmp/test-generation1/"
 
 	fileName1 := "1.txt"
 	fileName2 := "2.txt"

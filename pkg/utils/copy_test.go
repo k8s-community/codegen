@@ -8,8 +8,8 @@ import (
 
 // TestCopyFile checks that a file will be copied from source to destination path
 func TestCopyFile(t *testing.T) {
-	srcFile := "/tmp/dat1"
-	destFile := "/tmp/dat2"
+	srcFile := "/tmp/test-copy-file1"
+	destFile := "/tmp/test-copy-file2"
 
 	expectedText := "test\ncopy\nfile\n"
 	err := ioutil.WriteFile(srcFile, []byte(expectedText), 0644)
@@ -39,8 +39,8 @@ func TestCopyFile(t *testing.T) {
 
 // TestCopyDir checks that a directory will be copied from source to destination path
 func TestCopyDir(t *testing.T) {
-	srcDir := "/tmp/dat1/"
-	destDir := "/tmp/dat2/"
+	srcDir := "/tmp/test-copy-dir1/"
+	destDir := "/tmp/test-copy-dir2/"
 
 	fileName := "1.txt"
 	childDir := "/child"
