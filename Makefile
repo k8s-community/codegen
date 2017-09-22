@@ -3,7 +3,7 @@
 # license that can be found in the LICENSE file.
 
 APP=codegen
-PROJECT=github.com/k8s-community/codegen
+PROJECT=github.com/k8s-community/${APP}
 REGISTRY?=registry.k8s.community
 CA_DIR?=certs
 
@@ -20,10 +20,19 @@ CODEGEN_LOG_LEVEL?=0
 NAMESPACE?=k8s-community
 
 # Infrastructure: dev, stable, test ...
-INFRASTRUCTURE?=stable
+INFRASTRUCTURE?=k8s-community
+KUBE_CONTEXT?=${INFRASTRUCTURE}
 VALUES?=values-${INFRASTRUCTURE}
 
-CONTAINER_IMAGE?=${REGISTRY}/${APP}
+# Namespace: dev, prod, release, cte, username ...
+NAMESPACE?=k8s-community
+
+# Infrastructure (dev, stable, test ...) and kube-context for helm
+INFRASTRUCTURE?=stable
+KUBE_CONTEXT?=${INFRASTRUCTURE}
+VALUES?=values-${INFRASTRUCTURE}
+
+CONTAINER_IMAGE?=${REGISTRY}/${NAMESPACE}/${APP}
 CONTAINER_NAME?=${APP}-${NAMESPACE}
 
 REPO_INFO=$(shell git config --get remote.origin.url)
@@ -55,6 +64,7 @@ ifeq ("$(wildcard $(CA_DIR)/ca-certificates.crt)","")
 	@echo "+ $@"
 	@docker run --name ${CONTAINER_NAME}-certs -d alpine:edge sh -c "apk --update upgrade && apk add ca-certificates && update-ca-certificates"
 	@docker wait ${CONTAINER_NAME}-certs
+	@mkdir -p ${CA_DIR}
 	@docker cp ${CONTAINER_NAME}-certs:/etc/ssl/certs/ca-certificates.crt ${CA_DIR}
 	@docker rm -f ${CONTAINER_NAME}-certs
 endif
@@ -104,7 +114,7 @@ endif
 
 .PHONY: deploy
 deploy: push
-	helm upgrade ${CONTAINER_NAME} -f charts/${VALUES}.yaml charts --kube-context ${INFRASTRUCTURE} --namespace ${NAMESPACE} --version=${RELEASE} -i --wait
+	helm upgrade ${CONTAINER_NAME} -f charts/${VALUES}.yaml charts --kube-context ${KUBE_CONTEXT} --namespace ${NAMESPACE} --version=${RELEASE} -i --wait
 
 GO_LIST_FILES=$(shell go list ${PROJECT}/... | grep -v vendor)
 

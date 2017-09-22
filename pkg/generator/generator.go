@@ -40,6 +40,12 @@ func copyTemplatesDir(config Config) error {
 		return fmt.Errorf("cannot process templates for rename/move paths: %s", err)
 	}
 	for srcPath, destPath := range pathsMapForMove {
+		_, err := os.Stat(config.DestPath + "/" + srcPath)
+		if err != nil {
+			// dir doesn't exist
+			continue
+		}
+
 		err = os.Rename(config.DestPath+"/"+srcPath, config.DestPath+"/"+destPath)
 		if err != nil {
 			return fmt.Errorf("cannot rename/move path %s to %s", config.DestPath+"/"+srcPath, config.DestPath+"/"+destPath)

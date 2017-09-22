@@ -1,36 +1,37 @@
+// Copyright 2017 Kubernetes Community Authors. All rights reserved.
+// Use of this source code is governed by a MIT-style
+// license that can be found in the LICENSE file.
+
 package main
 
 import (
+	"fmt"
 	"log"
-	"net/http"
-	"os"
 
 	"github.com/k8s-community/codegen/pkg/config"
-	"github.com/k8s-community/codegen/pkg/handlers"
-	"github.com/kelseyhightower/envconfig"
+	"github.com/k8s-community/codegen/pkg/service"
+	"github.com/k8s-community/codegen/pkg/system"
 )
 
 func main() {
-	var config config.Config
-	err := envconfig.Process("codegen", &config)
-	if err != nil {
-		log.Fatalf("Couldn't get service config: %s", err)
+	// Load ENV configuration
+	cfg := new(config.Config)
+	if err := cfg.Load(config.SERVICENAME); err != nil {
+		log.Fatal(err)
 	}
 
-	directory := "/tmp/archive"
-	err = os.MkdirAll(directory, os.ModePerm)
+	// Configure service and get router
+	router, logger, err := service.Setup(cfg)
 	if err != nil {
-		log.Fatalf("Сannot create archive dir: %s", err)
+		log.Fatal(err)
 	}
 
-	http.HandleFunc("/", handlers.Root)
-	http.HandleFunc("/generate", handlers.GenerateCode)
+	// Listen and serve handlers
+	go router.Listen(fmt.Sprintf("%s:%d", cfg.LocalHost, cfg.LocalPort))
 
-	http.Handle("/archive/", http.StripPrefix("/archive/", http.FileServer(http.Dir(directory))))
-	http.Handle("/static/", http.FileServer(http.Dir("/")))
-
-	err = http.ListenAndServe(":8080", nil) // setting listening port
-	if err != nil {
-		log.Fatal("ListenAndServe: ", err)
+	// Wait signals
+	signals := system.NewSignals()
+	if err := signals.Wait(logger, new(system.Handling)); err != nil {
+		logger.Fatal(err)
 	}
 }

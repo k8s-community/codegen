@@ -28,7 +28,6 @@ type RecursiveExecutor struct {
 
 // NewRecursiveExecutor inits RecursiveExecutor instance
 func NewRecursiveExecutor(config Config) *RecursiveExecutor {
-	fmt.Printf("executor: #%v", config)
 	return &RecursiveExecutor{
 		Config: config,
 	}

@@ -3,12 +3,12 @@ package handlers
 import (
 	"fmt"
 	"html/template"
-	"log"
 	"net/http"
 	"strings"
 	txtTemplate "text/template"
 
 	"github.com/k8s-community/codegen/pkg/generator"
+	"github.com/k8s-community/codegen/pkg/router"
 	codeGenTemplate "github.com/k8s-community/codegen/pkg/template"
 	"github.com/k8s-community/codegen/pkg/utils"
 )
@@ -42,17 +42,14 @@ type ChartEnvironment struct {
 }
 
 // GenerateCode handles requests for code generation
-func GenerateCode(w http.ResponseWriter, r *http.Request) {
-	if r.Method != "POST" {
-		Root(w, r)
-		return
-	}
+func (h *Handler) GenerateCode(c router.Control) {
+	r := c.Request()
 
 	templatePath := "templates/generate-success.html"
 
 	htmlData := make(map[string]string)
 
-	archivePath, err := generateServiceArchive(r)
+	archivePath, err := h.generateServiceArchive(r)
 	if err != nil {
 		templatePath = "templates/generate.html"
 
@@ -60,49 +57,47 @@ func GenerateCode(w http.ResponseWriter, r *http.Request) {
 		for key := range r.Form {
 			htmlData[key] = r.Form.Get(key)
 		}
-
-		log.Printf("html data = %#v", htmlData)
 	}
 
 	t, err := template.ParseFiles("templates/layout.html", templatePath)
 	if err != nil {
-		log.Fatalf("Cannot parse `generate.html` or `layout.html`: %s", err)
+		h.logger.Fatalf("Cannot parse `generate.html` or `layout.html`: %s", err)
 	}
 
 	htmlData["link"] = strings.TrimLeft(archivePath, "/tmp")
-	t.ExecuteTemplate(w, "layout", htmlData)
+	t.ExecuteTemplate(c, "layout", htmlData)
 }
 
-func generateServiceArchive(r *http.Request) (string, error) {
-	config, err := getGeneratorConfigFromRequest(r)
+func (h *Handler) generateServiceArchive(r *http.Request) (string, error) {
+	config, err := h.getGeneratorConfigFromRequest(r)
 	if err != nil {
-		log.Printf("cannot get config from request: %s", err)
+		h.logger.Infof("cannot get config from request: %s", err)
 		return "", fmt.Errorf("There is a some problem with sent parameters.")
 	}
 
 	err = config.Validate()
 	if err != nil {
-		log.Printf("invalid sent parameters: %s", err)
+		h.logger.Infof("invalid sent parameters: %s", err)
 		return "", fmt.Errorf("Invalid sent parameters. Please check name of your service, service path.")
 	}
 
 	err = generator.GenerateCode(*config)
 	if err != nil {
-		log.Printf("cannot generate code: %s with config %#v", err, *config)
+		h.logger.Infof("cannot generate code: %s with config %#v", err, *config)
 		return "", fmt.Errorf("Cannot generate service: %s", err)
 	}
 
 	destFile := "/tmp/archive/" + fmt.Sprintf("%s.tar.gz", utils.RandomString(16))
 	err = utils.CreateTarGzArchive(config.DestPath, destFile)
 	if err != nil {
-		log.Printf("cannot generate code: %s with config %#v", err, *config)
+		h.logger.Infof("cannot generate code: %s with config %#v", err, *config)
 		return "", fmt.Errorf("Cannot generate service: %s", err)
 	}
 
 	return destFile, nil
 }
 
-func getGeneratorConfigFromRequest(r *http.Request) (*generator.Config, error) {
+func (h *Handler) getGeneratorConfigFromRequest(r *http.Request) (*generator.Config, error) {
 	err := r.ParseForm()
 	if err != nil {
 		return nil, err
@@ -112,7 +107,7 @@ func getGeneratorConfigFromRequest(r *http.Request) (*generator.Config, error) {
 
 	data := &TemplateData{
 		ServiceName: serviceName,
-		EnvPrefix:   createEnvPrefixFromServiceName(serviceName),
+		EnvPrefix:   h.createEnvPrefixFromServiceName(serviceName),
 
 		ServiceDescription: r.Form.Get("service_description"),
 		ProjectPath:        r.Form.Get("project_path"),
@@ -129,20 +124,20 @@ func getGeneratorConfigFromRequest(r *http.Request) (*generator.Config, error) {
 	// TODO: get it from request
 	devParams := ChartEnvironment{
 		RegistryHost:          "registry.k8s.community",
-		ServiceHost:           "k8sapp-dev.k8s.community",
+		ServiceHost:           "codegen-dev.k8s.community",
 		CommonServicesHost:    "services-dev.k8s.community",
 		Namespace:             "dev",
-		TLSSecretName:         "k8sapp-tls-secret",
+		TLSSecretName:         "codegen-tls-secret",
 		TLSServicesSecretName: "tls-secret",
 	}
 
 	// TODO: get it from request
 	stableParams := ChartEnvironment{
 		RegistryHost:          "registry.k8s.community",
-		ServiceHost:           "k8sapp.k8s.community",
+		ServiceHost:           "codegen.k8s.community",
 		CommonServicesHost:    "services.k8s.community",
 		Namespace:             "stable",
-		TLSSecretName:         "k8sapp-tls-secret",
+		TLSSecretName:         "codegen-tls-secret",
 		TLSServicesSecretName: "tls-secret",
 	}
 
@@ -174,7 +169,7 @@ func getGeneratorConfigFromRequest(r *http.Request) (*generator.Config, error) {
 	}, nil
 }
 
-func createEnvPrefixFromServiceName(serviceName string) string {
+func (h *Handler) createEnvPrefixFromServiceName(serviceName string) string {
 	prefix := strings.ToUpper(serviceName)
 
 	// Env prefix must not consist of -

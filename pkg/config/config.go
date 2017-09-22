@@ -1,6 +1,11 @@
+// Copyright 2017 Kubernetes Community Authors. All rights reserved.
+// Use of this source code is governed by a MIT-style
+// license that can be found in the LICENSE file.
+
 package config
 
 import (
+	"github.com/k8s-community/codegen/pkg/logger"
 	"github.com/kelseyhightower/envconfig"
 )
 
@@ -16,7 +21,7 @@ type Config struct {
 	// Local service port
 	LocalPort int `split_words:"true"`
 	// Logging level in logger.Level notation
-	LogLevel int `split_words:"true"`
+	LogLevel logger.Level `split_words:"true"`
 }
 
 // Load settles ENV variables into Config structure

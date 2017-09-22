@@ -4,7 +4,7 @@
 
 ## Count of instances
 ##
-replicaCount: 2
+replicaCount: 1
 
 ## Count of revisions saved in release history
 ##
@@ -40,7 +40,7 @@ image:
 
   ## Docker Registry/Hub auth secret name, always use `registry-pull-secret` if registry inside if k8s
   ##
-  # pullSecretName: registry-pull-secret
+  pullSecretName: registry-pull-secret
 
   ## Docker Registry/Hub image pull policy
   ##
