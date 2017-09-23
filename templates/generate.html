@@ -26,7 +26,7 @@
     </div>
     
     <div class="form-group">
-        <label class="col-md-4 control-label" for="project_path">GOPATH сервиса*</label>  
+        <label class="col-md-4 control-label" for="project_path">Базовый путь импорта для сервиса*</label>  
         <div class="col-md-6">
             <input id="go_path" name="project_path" type="text" placeholder="github.com/<username>/<myapp>" class="form-control input-md"  required=""
                     {{ if .project_path }}value="{{ .project_path }}"{{ end }}
