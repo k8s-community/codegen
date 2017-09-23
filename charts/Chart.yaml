@@ -1,6 +1,6 @@
 name: codegen
 description: A Helm charts for Kubernetes application
-version: 0.0.1
+version: 0.0.2
 home: https://k8s.community/
 sources:
   - https://github.com/k8s-community/codegen
