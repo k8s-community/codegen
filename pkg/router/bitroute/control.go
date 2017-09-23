@@ -89,6 +89,9 @@ func (c *control) Body(data interface{}) {
 
 	if str, ok := data.(string); ok {
 		content = []byte(str)
+		if c.w.Header().Get("Content-type") == "" {
+			c.w.Header().Add("Content-type", "text/plain; charset=utf-8")
+		}
 	} else {
 		var err error
 		content, err = json.Marshal(data)
