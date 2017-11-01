@@ -34,7 +34,7 @@ workflow: dev
 image:
   ## Docker Registry/Hub image name and tag
   ##
-  registry: registry.k8s.community
+  registry: registry.grahovac.me/default
   name: codegen
   tag: 0.0.3
 
@@ -44,7 +44,7 @@ image:
 
   ## Docker Registry/Hub image pull policy
   ##
-  pullPolicy: IfNotPresent
+  pullPolicy: Always
 
 ingress:
   ## If true, Ingress will be created
@@ -67,7 +67,7 @@ ingress:
   ##
   hostBased:
     hosts:
-    - codegen-dev.k8s.community
+    - codegen.grahovac.me
 
     ## Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -75,7 +75,7 @@ ingress:
     tls:
     - secretName: codegen-tls-secret
       hosts:
-      - codegen-dev.k8s.community
+      - codegen.grahovac.me
 
   ## Ingress path feature allow access to service through path 
   ## example: https://hostname/namespace/servicename
@@ -83,7 +83,7 @@ ingress:
   ##
   pathBased:
     hosts:
-    - services-dev.k8s.community
+    - services.grahovac.me
 
     ## Ingress TLS configuration
     ## Secrets must be manually created in the namespace
@@ -92,7 +92,7 @@ ingress:
     tls:
     - secretName: services-secret
       hosts:
-      - services-dev.k8s.community
+      - services.grahovac.me
 
 service:
   ## App container name
