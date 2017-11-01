@@ -34,7 +34,7 @@ workflow: dev
 image:
   ## Docker Registry/Hub image name and tag
   ##
-  registry: registry.grahovac.me/default
+  registry: registry.grahovac.me
   name: codegen
   tag: 0.0.3
 
