@@ -1,0 +1,15 @@
+# Binary files
+cmd/cmd
+bin
+
+.idea
+*.DS_Store
+
+.glide/
+glide.lock
+
+_vendor*
+
+certs
+
+.coverprofile

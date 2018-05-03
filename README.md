@@ -49,4 +49,5 @@ Thank you for your understanding!
 
 ## Author Information
 
-Kubernets Community [k8s-community](https://github.com/k8s-community)
+Kubernetes Community [k8s-community](https://github.com/k8s-community)
+
